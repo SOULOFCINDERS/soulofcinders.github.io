@@ -18,6 +18,9 @@ git config --list
 生成ssh密钥
 ssh-keygen -t ed25519 -C "841135647@qq.com"
 
+切换http到ssh
+git config --global url.git@github.com:.insteadOf https://github.com/
+
 复制上一台机子的id_rsa密钥，并赋予可执行权限
 chmod 600 id_rsa
 
