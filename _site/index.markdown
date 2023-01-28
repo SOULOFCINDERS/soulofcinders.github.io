@@ -15,6 +15,9 @@ git config --global user.email  "841135647@qq.com"
 git config --global user.name  "SOULOFCINDER"
 git config --list 
 
+生成ssh密钥
+ssh-keygen -t ed25519 -C "841135647@qq.com"
+
 复制上一台机子的id_rsa密钥，并赋予可执行权限
 chmod 600 id_rsa
 
