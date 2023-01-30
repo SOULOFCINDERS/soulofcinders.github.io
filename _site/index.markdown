@@ -79,3 +79,9 @@ apt-get dist-upgrade
 ```
 
 如果这个过程出问题，系统会坏掉，建议重装
+
+### WSL2技巧
+停止WSL2到win的NAT转换，这可能会导致WSL2没有网络，但是同时可以解决docker端口占用的问题
+net stop winnat
+docker start container_name
+net start winnat
