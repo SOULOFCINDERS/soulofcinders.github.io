@@ -87,3 +87,54 @@ net stop winnat
 docker start container_name
 net start winnat
 ```
+
+WSL2的.wslconfig配置
+```
+[wsl2]
+networkingMode=bridged
+vmSwitch=WSL_Bridge
+dhcp=false
+macAddress=5c:bb:f6:9e:ee:55
+
+memory=4GB 
+processors=4
+```
+
+在WSL内部：
+```
+sudo gedit /etc/wsl.conf
+```
+
+编辑输入：
+```
+[boot]
+systemd=true
+[network]
+generateResolvConf = false
+```
+
+然后：
+```
+sudo gedit /usr/lib/systemd/network/wsl_external.network
+```
+
+编辑输入：
+```
+[Match]
+Name=eth0
+
+[Network]
+Description=WSL_external
+DHCP=false
+Address=192.168.1.10/24 # 这是自定的ip地址
+Gateway=192.168.1.1
+DNS=192.168.1.30
+```
+
+WSL中运行：
+```
+sudo systemctl enable systemd-networkd
+sudo systemctl restart systemd-networkd
+ip a
+```
+
