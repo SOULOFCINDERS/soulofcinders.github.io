@@ -25,7 +25,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="/assets/css/style.css?v=8647c262f2367469e924a62fb5e331f13b4d10e6">
+    <link rel="stylesheet" href="/assets/css/style.css?v=126789bdf48938fa45de810f11e97decdc77e5b9">
     <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
 
 <!-- Setup Google Analytics -->
@@ -191,6 +191,57 @@ ip a
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net stop winnat
 netsh int ipv4 add excludedportrange protocol=tcp startport=6379 numberofports=1 store=persistent
 net start winnat
+</code></pre></div></div>
+
+<p>要实现从局域网访问 WSL 2 网络，需要在 Windows 上配置 端口转发 和 防火墙允许入站规则。参考以下 PowerShell 命令（需以管理员权限执行）:</p>
+
+<p>查询 WSL 2 IP 地址</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Users\ruihusky&gt; wsl -- hostname -I
+172.20.147.252
+</code></pre></div></div>
+
+<p>配置端口转发：外网访问 windows 8080 端口转发到 172.20.147.252:8080</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Users\ruihusky&gt; netsh interface portproxy add v4tov4 listenport=8080 connectaddress=172.20.147.252 connectport=8080
+</code></pre></div></div>
+
+<p>添加允许入站规则</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Users\ruihusky&gt; New-NetFirewallRule -DisplayName "Allow Inbound TCP Port 8080" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 8080
+
+Name                  : {0ff9eeaa-3e82-46f0-8b2a-cb985d514ede}
+DisplayName           : Allow Inbound TCP Port 8080
+Description           :
+DisplayGroup          :
+Group                 :
+Enabled               : True
+Profile               : Any
+Platform              : {}
+Direction             : Inbound
+Action                : Allow
+EdgeTraversalPolicy   : Block
+LooseSourceMapping    : False
+LocalOnlyMapping      : False
+Owner                 :
+PrimaryStatus         : OK
+Status                : 已从存储区成功分析规则。 (65536)
+EnforcementStatus     : NotApplicable
+PolicyStoreSource     : PersistentStore
+PolicyStoreSourceType : Local
+</code></pre></div></div>
+
+<p>对应的删除配置命令：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Users\ruihusky&gt; netsh interface portproxy show v4tov4
+
+侦听 ipv4:                 连接到 ipv4:
+
+地址            端口        地址            端口
+--------------- ----------  --------------- ----------
+*               8080        172.20.147.252  8080
+
+# 删除端口转发规则
+C:\Users\ruihusky&gt; netsh interface portproxy delete v4tov4 listenport=8080
+
+# 删除防火墙入站规则
+C:\Users\ruihusky&gt; Remove-NetFirewallRule -DisplayName "Allow Inbound TCP Port 8080"
 </code></pre></div></div>
 
 

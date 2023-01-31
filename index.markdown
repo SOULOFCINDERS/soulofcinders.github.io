@@ -156,3 +156,59 @@ net stop winnat
 netsh int ipv4 add excludedportrange protocol=tcp startport=6379 numberofports=1 store=persistent
 net start winnat
 ```
+
+要实现从局域网访问 WSL 2 网络，需要在 Windows 上配置 端口转发 和 防火墙允许入站规则。参考以下 PowerShell 命令（需以管理员权限执行）:
+
+查询 WSL 2 IP 地址
+```
+C:\Users\ruihusky> wsl -- hostname -I
+172.20.147.252
+```
+
+配置端口转发：外网访问 windows 8080 端口转发到 172.20.147.252:8080
+```
+C:\Users\ruihusky> netsh interface portproxy add v4tov4 listenport=8080 connectaddress=172.20.147.252 connectport=8080
+```
+
+添加允许入站规则
+```
+C:\Users\ruihusky> New-NetFirewallRule -DisplayName "Allow Inbound TCP Port 8080" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 8080
+
+Name                  : {0ff9eeaa-3e82-46f0-8b2a-cb985d514ede}
+DisplayName           : Allow Inbound TCP Port 8080
+Description           :
+DisplayGroup          :
+Group                 :
+Enabled               : True
+Profile               : Any
+Platform              : {}
+Direction             : Inbound
+Action                : Allow
+EdgeTraversalPolicy   : Block
+LooseSourceMapping    : False
+LocalOnlyMapping      : False
+Owner                 :
+PrimaryStatus         : OK
+Status                : 已从存储区成功分析规则。 (65536)
+EnforcementStatus     : NotApplicable
+PolicyStoreSource     : PersistentStore
+PolicyStoreSourceType : Local
+```
+
+
+对应的删除配置命令：
+```
+C:\Users\ruihusky> netsh interface portproxy show v4tov4
+
+侦听 ipv4:                 连接到 ipv4:
+
+地址            端口        地址            端口
+--------------- ----------  --------------- ----------
+*               8080        172.20.147.252  8080
+
+# 删除端口转发规则
+C:\Users\ruihusky> netsh interface portproxy delete v4tov4 listenport=8080
+
+# 删除防火墙入站规则
+C:\Users\ruihusky> Remove-NetFirewallRule -DisplayName "Allow Inbound TCP Port 8080"
+```
