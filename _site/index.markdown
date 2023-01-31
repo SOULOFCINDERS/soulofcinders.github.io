@@ -138,3 +138,21 @@ sudo systemctl restart systemd-networkd
 ip a
 ```
 
+查看WSL虚拟网卡ip，在WSL中运行：
+```
+ip a |grep "global eth0"
+```
+
+在Windows中通过<wsl-ip>和<端口>就可以访问WSL2中的应用程序
+
+解决docker desktop在win下启动容器端口占用的问题
+这种情况是Hyper-V会保留部分tcp端口，开始到结束范围内的端口不可用：
+```
+netsh interface ipv4 show excludedportrange protocol=tcp
+```
+解决方法是暂时关闭NAT服务，并排除你想要的端口(6379)作为保留端口
+```
+net stop winnat
+netsh int ipv4 add excludedportrange protocol=tcp startport=6379 numberofports=1 store=persistent
+net start winnat
+```

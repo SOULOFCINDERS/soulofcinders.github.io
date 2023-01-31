@@ -25,7 +25,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="/assets/css/style.css?v=c0846cd37e6edff7919e6124591e79a6fd0212a0">
+    <link rel="stylesheet" href="/assets/css/style.css?v=8647c262f2367469e924a62fb5e331f13b4d10e6">
     <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
 
 <!-- Setup Google Analytics -->
@@ -177,6 +177,21 @@ sudo systemctl restart systemd-networkd
 ip a
 </code></pre></div></div>
 
+<p>查看WSL虚拟网卡ip，在WSL中运行：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip a |grep "global eth0"
+</code></pre></div></div>
+
+<p>在Windows中通过<wsl-ip>和<端口>就可以访问WSL2中的应用程序</端口></wsl-ip></p>
+
+<p>解决docker desktop在win下启动容器端口占用的问题
+这种情况是Hyper-V会保留部分tcp端口，开始到结束范围内的端口不可用：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>netsh interface ipv4 show excludedportrange protocol=tcp
+</code></pre></div></div>
+<p>解决方法是暂时关闭NAT服务，并排除你想要的端口(6379)作为保留端口</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net stop winnat
+netsh int ipv4 add excludedportrange protocol=tcp startport=6379 numberofports=1 store=persistent
+net start winnat
+</code></pre></div></div>
 
 
       <footer class="site-footer">
