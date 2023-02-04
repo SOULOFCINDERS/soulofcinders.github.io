@@ -1,5 +1,6 @@
 ### git的使用
 
+基础设置
 ```
 查看状态
 git status
@@ -24,19 +25,6 @@ git config --global url.git@github.com:.insteadOf https://github.com/
 复制上一台机子的id_rsa密钥，并赋予可执行权限
 chmod 600 id_rsa
 
-签发一个新分支
-git checkout -b feature
-
-切换分支到main和feature
-git checkout main
-git checkout feature
-
-拉取某个分支的代码
-git pull origin feature(分支名)
-
-在本地分支提交代码到远程分支
-git push origin feature(分支名)
-
 拉取当前分支最新代码
 git pull
 
@@ -53,6 +41,29 @@ git add .
 git commit -m "initial commit"
 git push -u origin main
 ```
+
+分支开发
+```
+签发一个新分支
+git checkout -b feature
+
+切换分支到main和feature
+git checkout main
+git checkout feature
+
+拉取某个分支的代码
+git pull origin feature(分支名)
+
+在本地分支提交代码到远程分支
+git push origin feature(分支名)
+
+删除某个本地分支
+git branch -d feature/demo1(分支名)
+
+删除某个远程分支
+git push origin --delete feature/demo1(分支名)
+```
+
 
 
 ### debian大版本升级
