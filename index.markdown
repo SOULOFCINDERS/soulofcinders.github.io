@@ -24,9 +24,18 @@ git config --global url.git@github.com:.insteadOf https://github.com/
 复制上一台机子的id_rsa密钥，并赋予可执行权限
 chmod 600 id_rsa
 
+签发一个新分支
+git checkout -b feature
+
 切换分支到main和feature
 git checkout main
 git checkout feature
+
+拉取某个分支的代码
+git pull origin feature(分支名)
+
+在本地分支提交代码到远程分支
+git push origin feature(分支名)
 
 拉取当前分支最新代码
 git pull
