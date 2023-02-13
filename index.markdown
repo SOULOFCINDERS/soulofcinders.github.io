@@ -44,14 +44,20 @@ git push -u origin main
 
 分支开发
 ```
-签发一个新分支
+签发一个新本地分支
 git checkout -b feature
 
 切换分支到main和feature
 git checkout main
 git checkout feature
 
-拉取某个分支的代码
+当使用git branch -a的时候发现显示的远程分支和github界面的远程分支不一致时，使用下列方式更新
+git fetch
+
+当与某个远程分支对应的本地分支不存在时，拉取某个远程分支到本地
+git checkout -b feature(分支名) origin/feature(分支名)
+
+拉取某个远程分支的代码
 git pull origin feature(分支名)
 
 在本地分支提交代码到远程分支
